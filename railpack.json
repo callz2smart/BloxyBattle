@@ -1,0 +1,6 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "install": {
+    "command": "npm ci --include=dev"
+  }
+}
