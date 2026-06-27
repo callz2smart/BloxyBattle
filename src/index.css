@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Fredoka', sans-serif !important;
+  user-select: none;
+}
+
+input, textarea {
+  user-select: text !important;
+}
+
+body {
+  background-color: #f8fafc;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath fill='none' stroke='%230f172a' stroke-opacity='0.04' d='M30 0l30 15v30l-30 15L0 45V15L30 0z M0 15l30 15 30-15 M30 30v30'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+.dark body {
+  background-color: #000000;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-opacity='0.12' d='M30 0l30 15v30l-30 15L0 45V15L30 0z M0 15l30 15 30-15 M30 30v30'/%3E%3C/svg%3E");
+}
+
+/* ── Rarity Borders ─────────────────────────────────────── */
+.rarity-huge {
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  position: relative;
+}
+.rarity-huge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #a855f7 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.rarity-legendary {
+  border: 1px solid transparent;
+  position: relative;
+}
+.rarity-legendary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ── HOT Badge ──────────────────────────────────────────── */
+.hot-badge {
+  @apply text-[8px] uppercase tracking-widest px-1.5 py-0.5 rounded-full;
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  color: white;
+  flex-shrink: 0;
+}
+
+/* ── Trend Colors ───────────────────────────────────────── */
+.trend-rising  { color: #22c55e; }
+.trend-stable  { color: #94a3b8; }
+.trend-falling { color: #f87171; }
+
+/* ── Shine Effect ───────────────────────────────────────── */
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+.shine-effect::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -150%;
+  width: 20%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: rotate(30deg);
+  pointer-events: none;
+  z-index: 10;
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.shine-effect:hover::after {
+  left: 150%;
+}
+.dark .shine-effect::after { display: none; }
+
+/* ── Inventory Badge ────────────────────────────────────── */
+.inventory-badge {
+  @apply absolute top-0 left-0 z-20 bg-indigo-600 text-white text-[8px] px-1.5 py-0.5 rounded-br-xl font-normal;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f8fafc; }
+::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+  border: 2px solid #f8fafc;
+}
+::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+
+.dark ::-webkit-scrollbar-track { background: #000; }
+.dark ::-webkit-scrollbar-thumb { background: #1a1a1a; border-color: #000; }
+
+/* ── Demand Bar ─────────────────────────────────────────── */
+.demand-fill {
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+  transition: width 1.2s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+/* ── Modal Backdrop ─────────────────────────────────────── */
+.modal-backdrop {
+  @apply fixed inset-0 z-[100] flex items-center justify-center p-4;
+  background: rgba(2, 6, 23, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* ── Animations ─────────────────────────────────────────── */
+@keyframes modalSlideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-animate { animation: modalSlideUp 0.3s cubic-bezier(0.2, 1, 0.3, 1) forwards; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to   { opacity: 0; transform: translateX(-50%) translateY(10px); }
+}
+.toast-in  { animation: toastIn  0.25s ease forwards; }
+.toast-out { animation: toastOut 0.25s ease forwards; }
+
+/* ── Pet Card Tilt ──────────────────────────────────────── */
+.pet-card {
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+  border-radius: 1rem;
+  background: white;
+}
+.dark .pet-card { background: #000; }
+
+/* ── Hide number input spinners ─────────────────────────── */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type='number'] { -moz-appearance: textfield; }
