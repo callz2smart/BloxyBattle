@@ -1,7 +1,13 @@
 import { io } from 'socket.io-client'
 
 const DEFAULT_SERVER_URL = 'http://localhost:4000'
-const SERVER_URL = (import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_SERVER_URL || '').replace(/\/+$/,'') || DEFAULT_SERVER_URL
+const CONFIGURED_SERVER_URL = (import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_SERVER_URL || '').replace(/\/+$/,'')
+
+function getProductionServerUrl() {
+  if (CONFIGURED_SERVER_URL) return CONFIGURED_SERVER_URL
+  if (typeof window !== 'undefined') return window.location.origin
+  return ''
+}
 
 let socket = null
 
@@ -15,11 +21,12 @@ export function connectSocket() {
     if (!socket.connected) socket.connect()
     return socket
   }
-  const url = import.meta.env.DEV ? DEFAULT_SERVER_URL : SERVER_URL
+  const url = import.meta.env.DEV ? DEFAULT_SERVER_URL : getProductionServerUrl()
   socket = io(url, {
     withCredentials: true,
     autoConnect: true,
     transports: ['websocket', 'polling'],
+    reconnectionAttempts: 5,
   })
   return socket
 }

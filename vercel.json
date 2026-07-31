@@ -1,34 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "web": {
-      "root": ".",
-      "framework": "vite"
-    },
-    "api": {
-      "root": ".",
-      "entrypoint": "server/index.js",
-      "framework": "express"
-    }
-  },
+  "framework": "vite",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": {
-        "service": "api"
-      }
-    },
-    {
-      "source": "/socket.io/(.*)",
-      "destination": {
-        "service": "api"
-      }
+      "source": "/api/:path*",
+      "destination": "/api/index?__vercel_path=:path*"
     },
     {
       "source": "/(.*)",
-      "destination": {
-        "service": "web"
-      }
+      "destination": "/index.html"
     }
   ]
 }
