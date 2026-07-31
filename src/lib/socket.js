@@ -3,10 +3,23 @@ import { io } from 'socket.io-client'
 const DEFAULT_SERVER_URL = 'http://localhost:4000'
 const CONFIGURED_SERVER_URL = (import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_SERVER_URL || '').replace(/\/+$/,'')
 
-function getProductionServerUrl() {
-  if (CONFIGURED_SERVER_URL) return CONFIGURED_SERVER_URL
-  if (typeof window !== 'undefined') return window.location.origin
-  return ''
+const disabledSocket = {
+  connected: false,
+  connect() {
+    return this
+  },
+  disconnect() {
+    return this
+  },
+  emit() {
+    return this
+  },
+  on() {
+    return this
+  },
+  off() {
+    return this
+  },
 }
 
 let socket = null
@@ -17,11 +30,13 @@ export function getSocket() {
 
 /** Connect (idempotent). Safe to call after login or on app bootstrap. */
 export function connectSocket() {
+  if (!import.meta.env.DEV && !CONFIGURED_SERVER_URL) return disabledSocket
+
   if (socket) {
     if (!socket.connected) socket.connect()
     return socket
   }
-  const url = import.meta.env.DEV ? DEFAULT_SERVER_URL : getProductionServerUrl()
+  const url = import.meta.env.DEV ? DEFAULT_SERVER_URL : CONFIGURED_SERVER_URL
   socket = io(url, {
     withCredentials: true,
     autoConnect: true,
