@@ -11,6 +11,7 @@ function isUuidLike(value) {
 }
 
 const app = express()
+const isVercel = Boolean(process.env.VERCEL)
 for (const method of ['get', 'post', 'patch', 'delete']) {
   const registerRoute = app[method].bind(app)
   app[method] = (routePath, ...handlers) => registerRoute(
@@ -1143,7 +1144,9 @@ function startRainTimer() {
 }
 
 await initializeRainState()
-startRainTimer()
+if (!isVercel) {
+  startRainTimer()
+}
 io.use(async (socket, next) => {
   try {
     const identity = await getAuthenticatedIdentityFromHeaders(socket.handshake.headers)
@@ -2219,6 +2222,14 @@ app.get('/api/games/feed', (req, res) => {
   res.json({ feed: FEED.slice(0, limit) })
 })
 
+app.get('/api/health', (req, res) => {
+  res.json({
+    ok: true,
+    service: 'bloxybattle-api',
+    environment: isVercel ? 'vercel' : 'local',
+  })
+})
+
 app.get('/', (req, res) => {
   res.send('Socket server is running')
 })
@@ -2259,4 +2270,9 @@ function startServer(port, attempt = 1) {
   })
 }
 
-startServer(PORT)
+if (!isVercel) {
+  startServer(PORT)
+}
+
+export { app, server, io }
+export default app
